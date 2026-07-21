@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <windows.h>
+#define Sleep(ms) usleep((ms) * 1000)
 #include "STD_TYPES.h"
 #include "Models.h"
 #include "../ADMIN/Admin_Interface.h"
@@ -14,7 +14,15 @@ u8 Mode_Selection();
 
 int main(){
 
-    INTRO();   
+    INTRO();
+    IntializePatients();
+
+    u8 mode = Mode_Selection();
+    if (mode == 1) {
+        AdminMode();
+    } else if (mode == 2) {
+        UserMode();
+    }
 
     return 0;
 }
@@ -46,24 +54,11 @@ u8 Mode_Selection(){
     {
     case 1:
         return ModeSelected;
-        AdminMode();
-        break;
     case 2:
         return ModeSelected;
-        UserMode();
-        break;
     default:
         printf(">>Please Select Between 1~2\n\n");
         return Mode_Selection();
     }
-}
-
-/*User Mode*/
-void UserMode(){
-    u16 ID;
-    printf("\n");
-    printf("Welcome Mr/Mrs \n Please Enter Your Patient ID > ");
-    scanf("%lu", &ID);
-
 }
 
