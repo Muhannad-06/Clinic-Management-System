@@ -2,6 +2,8 @@
 #include <windows.h>
 #include "STD_TYPES.h"
 #include "Models.h"
+#include "../ADMIN/Admin_Interface.h"
+#include "../USER/User_Interface.h"
 
 #define SLEEP_T 0*(0.75 * 1000)
 
@@ -38,19 +40,21 @@ u8 Mode_Selection(){
     printf("|| 1 -> Admin       ||\n");
     printf("|| 2 -> User        ||\n");
     printf("|| Choice : ");
-    scanf("%u", &ModeSelected);
+    scanf("%hhu", &ModeSelected);
     printf("======================\n");
     switch (ModeSelected)
     {
     case 1:
         return ModeSelected;
+        AdminMode();
         break;
     case 2:
         return ModeSelected;
+        UserMode();
         break;
     default:
         printf(">>Please Select Between 1~2\n\n");
-        Mode_Selection();
+        return Mode_Selection();
     }
 }
 

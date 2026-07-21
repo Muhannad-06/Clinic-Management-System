@@ -18,5 +18,12 @@ typedef double f64;
 
 typedef long double f128;
 
+#define NULL ((void*)0)
+
+typedef enum
+{
+    VALID,
+    INVALID
+} ErrorCode;
 
 #endif /* STD_TYPES_H_ */
