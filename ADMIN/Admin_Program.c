@@ -6,9 +6,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-u16 dailySlots[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+u32 dailySlots[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-/* The text representations of our 5 slots */
+/* The text representations of our 10 slots */
 const u8* slotTimes[10] = {
     "10:00 AM to 10:30 AM",
     "10:30 AM to 11:00 AM",
@@ -23,7 +23,7 @@ const u8* slotTimes[10] = {
 };
 
 /* Helper function to check if an ID already exists */
-struct Patient* SearchPatient(u16 targetID) {
+struct Patient* SearchPatient(u32 targetID) {
     struct Patient* current = &DefaultPatient[0];
     while (current != NULL) {
         if (current->ID == targetID) {
@@ -38,7 +38,7 @@ void AdminMode() {
     u8 password[15];
     u8 trials = 0;
     u8 authenticated = 0;
-    u8 choice;
+    u16 choice;
     
     printf("\n========================================\n");
     printf("               ADMIN LOGIN              \n");
@@ -48,7 +48,7 @@ void AdminMode() {
         printf("Enter Password: ");
         scanf("%14s", password);
         
-        if (strcmp((u8*)password, admin.SecurityPassCode) == 0) {
+        if (strcmp((char*)password, (char*)admin.SecurityPassCode) == 0) {
             authenticated = 1;
             break;
         }
@@ -77,41 +77,49 @@ void AdminMode() {
         scanf("%hu", &choice);
 
         switch (choice) {
-            case 1: {
+            case 1: 
+            {
                 /* Feature 1: Add New Patient */
-                u16 newID;
+                u32 newID;
                 printf("\n[ADD PATIENT]\nEnter New Patient ID: ");
-                scanf("%hu", &newID);
+                scanf("%u", &newID);
                 
                 if (SearchPatient(newID) != NULL) {
-                    printf(">> Error: ID %hu already exists. Entry rejected.\n", newID);
+                    printf(">> Error: ID %u already exists. Entry rejected.\n", newID);
                 } else {
-                    /* Allocate new memory for the patient */
                     struct Patient* newP = (struct Patient*)malloc(sizeof(struct Patient));
+                    if (newP == NULL) {
+                        printf(">> Error: Memory allocation failed.\n");
+                        break;
+                    }
+
                     newP->ID = newID;
                     
                     printf("Enter Name: ");
-                    scanf(" %49[^\n]", newP->Name);
+                    scanf(" %99[^\n]", newP->Name);
                     printf("Enter Age: ");
                     scanf("%hu", &newP->Age);
                     
+                    /* Initialize the rest of the struct safely */
+                    strcpy((u8*)newP->MedicalRecord, "No record yet");
+                    newP->nxtAPP = NULL; 
                     newP->NEXT = NULL;
-                    
-                    /* Append to the end of the linked list */
-                    struct Patient* current = &DefaultPatient[0];
-                    while (current->NEXT != NULL) {
-                        current = current->NEXT;
+
+                    if (TAILPTR != NULL) {
+                        TAILPTR->NEXT = newP;
+                        TAILPTR = newP; 
                     }
-                    current->NEXT = newP;
+                    
                     printf(">> Patient added successfully!\n");
                 }
                 break;
             }
-            case 2: {
+            case 2: 
+            {
                 /* Feature 2: Edit Patient */
-                u16 targetID;
+                u32 targetID;
                 printf("\n[EDIT PATIENT]\nEnter Patient ID to edit: ");
-                scanf("%hu", &targetID);
+                scanf("%u", &targetID);
                 
                 struct Patient* p = SearchPatient(targetID);
                 if (p == NULL) {
@@ -119,65 +127,89 @@ void AdminMode() {
                 } else {
                     printf("Editing Patient: %s\n", p->Name);
                     printf("Enter New Name: ");
-                    scanf(" %49[^\n]", p->Name);
+                    scanf(" %99[^\n]", p->Name);
                     printf("Enter New Age: ");
                     scanf("%hu", &p->Age);
                     printf(">> Record updated successfully!\n");
                 }
                 break;
             }
-            case 3: {
+            case 3: 
+            {
                 /* Feature 3: Reserve a Slot */
-                u16 patID;
+                u32 patID;
                 u16 slotChoice;
                 
                 printf("\n[RESERVE SLOT]\nAvailable Slots:\n");
-                for (int i = 0; i < 5; i++) {
+                /* LOOP in the 10 Slots */
+                for (int i = 0; i < 10; i++) {
                     if (dailySlots[i] == 0) {
                         printf(" %d -> %s\n", i + 1, slotTimes[i]);
                     }
                 }
                 
                 printf("\nEnter Patient ID: ");
-                scanf("%hu", &patID);
+                scanf("%u", &patID);
                 
-                if (SearchPatient(patID) == NULL) {
-                    printf(">> Error: Patient ID %hu does not exist.\n", patID);
+                struct Patient* p = SearchPatient(patID);
+                if (p == NULL) {
+                    printf(">> Error: Patient ID %u does not exist.\n", patID);
                     break;
                 }
                 
-                printf("Enter Slot Number (1-5): ");
+                printf("Enter Slot Number (1-10): ");
                 scanf("%hu", &slotChoice);
                 
-                if (slotChoice < 1 || slotChoice > 5) {
+                if (slotChoice < 1 || slotChoice > 10) 
+                { 
                     printf(">> Error: Invalid slot number.\n");
-                } else if (dailySlots[slotChoice - 1] != 0) {
+                } 
+                else if (dailySlots[slotChoice - 1] != 0)
+                 {
                     printf(">> Error: That slot is already reserved.\n");
-                } else {
+                 } else 
+                  {
+                    /* Claim the slot */
                     dailySlots[slotChoice - 1] = patID;
-                    printf(">> Slot successfully reserved for ID %hu!\n", patID);
-                }
+                    
+                    /* Link the appointment to the Patient so UserMode works */
+                    if (p->nxtAPP == NULL) {
+                        p->nxtAPP = (struct Appointment*)malloc(sizeof(struct Appointment));
+                    }
+                    strcpy((char*)p->nxtAPP->clinicName, "General Practice");
+                    p->nxtAPP->patientID = patID;
+                    /* Rough estimation of hour based on slot choice */
+                    p->nxtAPP->Time = 10 + (slotChoice / 2); 
+                    
+                    printf(">> Slot successfully reserved for ID %u!\n", patID);
+                 }
                 break;
             }
             case 4: {
                 /* Feature 4: Cancel Reservation */
-                u16 patID;
+                u32 patID;
                 u8 found = 0;
                 
                 printf("\n[CANCEL RESERVATION]\nEnter Patient ID: ");
-                scanf("%hu", &patID);
+                scanf("%u", &patID);
                 
-                /* Search through the dailySlots array to find this ID's reservation */
-                for (int i = 0; i < 5; i++) {
+                /* Search through all 10 slots */
+                for (int i = 0; i < 10; i++) {
                     if (dailySlots[i] == patID) {
                         dailySlots[i] = 0; /* Free the slot */
                         found = 1;
                         printf(">> Reservation for %s cancelled. Slot is now available.\n", slotTimes[i]);
+                        
+                        struct Patient* p = SearchPatient(patID);
+                        if (p != NULL && p->nxtAPP != NULL) {
+                            free(p->nxtAPP);
+                            p->nxtAPP = NULL;
+                        }
                     }
                 }
                 
                 if (found == 0) {
-                    printf(">> Error: No reservations found for Patient ID %hu.\n", patID);
+                    printf(">> Error: No reservations found for Patient ID %u.\n", patID);
                 }
                 break;
             }

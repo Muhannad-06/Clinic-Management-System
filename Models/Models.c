@@ -1,7 +1,10 @@
 #include "../APP/STD_TYPES.h"
 #include "Models_Interface.h"
 
-/* Pointer to the last patient in the linked list to optimize searching/appending */
+/* DEFINE EXTERN VARIABLES */
+struct Patient DefaultPatient[MAX_NUMBER_OF_PATIENTS];
+struct Admin admin = {.userName = "admin", .SecurityPassCode = "admin123"};
+u32 lastID = 2026010;
 struct Patient* TAILPTR = NULL;
 
 /* Initialize Some Patients */

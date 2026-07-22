@@ -4,21 +4,21 @@
 #include "User_Interface.h"
 
 void UserMode(){
-    u16 ID;
-    u8 found = 0; 
+    u32 ID;
+    u8 foundFLAG = 0; 
     
     struct Patient* currentPatient = &DefaultPatient[0]; 
 
     printf("\n");
     printf("Welcome!\nPlease Enter Your Patient ID > ");
     
-    scanf("%hu", &ID); 
+    scanf("%u", &ID); 
 
     while (currentPatient != NULL) 
     {
         if (currentPatient->ID == ID) 
         {
-            found = 1;
+            foundFLAG = 1;
             printf("\n========================================\n");
             printf("          PATIENT RECORD FOUND          \n");
             printf("========================================\n");
@@ -28,10 +28,16 @@ void UserMode(){
             printf("----------------------------------------\n");
             printf("          NEXT APPOINTMENT              \n");
             printf("----------------------------------------\n");
-            printf(" Clinic : %s\n", currentPatient->nxtAPP.clinicName);
-            printf(" Time   : %02d:00 (24-hour format)\n", currentPatient->nxtAPP.Time);
-            printf("----------------------------------------\n");
-            printf("              APPOINTMENTs              \n");
+            if (currentPatient->nxtAPP != NULL) 
+            {
+                /* Use the arrow operator (->) because nxtAPP is now a pointer */
+                printf(" Clinic : %s\n", currentPatient->nxtAPP->clinicName);
+                printf(" Time   : %02d:00 (24-hour format)\n", currentPatient->nxtAPP->Time);
+            } 
+            else 
+            {
+                printf(" Status : No upcoming appointments scheduled.\n");
+            }
             printf("----------------------------------------\n");
             printf("Date");
             printf("========================================\n\n");
@@ -42,7 +48,7 @@ void UserMode(){
         currentPatient = currentPatient->NEXT; 
     }
 
-    if (found == 0) 
+    if (foundFLAG == 0) 
     {
         printf("\n>> Error: Patient ID %hu is not registered in our system.\n\n", ID);
     }
