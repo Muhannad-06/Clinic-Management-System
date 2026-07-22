@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h> /* Will Be Used for to_lowercase() */
 
+/* Intialize The Slots and Fill The already Taken Reservations */
 u32 dailySlots[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 /* The text representations of our 10 slots */
@@ -126,10 +128,31 @@ void AdminMode() {
                     printf(">> Error: Incorrect ID. Patient not found.\n");
                 } else {
                     printf("Editing Patient: %s\n", p->Name);
-                    printf("Enter New Name: ");
-                    scanf(" %99[^\n]", p->Name);
-                    printf("Enter New Age: ");
-                    scanf("%hu", &p->Age);
+                    printf("Update The Medical Record: ");
+                    scanf(" %99[^\n]", p->MedicalRecord);
+                    printf("\nWanna Update Any Personal Data (y) ? \n");
+                    u8 charChoice;
+                    scanf(" %c", &charChoice); 
+                    
+                    /* Supports both uppercase and lowercase 'y' */
+                    if (charChoice == 'y' || charChoice == 'Y') 
+                    {
+                        u16 numChoice;
+                        printf(" 1 -> Name \n 2 -> Age\n> ");
+                        scanf("%hu", &numChoice);
+                        
+                        if (numChoice == 1)
+                        {
+                            printf("Enter New Name for %s: ", p->Name);
+                            scanf(" %99[^\n]", p->Name); 
+                        }
+                        else if (numChoice == 2)
+                        {
+                            printf("Enter New Age for %s: ", p->Name);
+                            scanf("%hu", &p->Age); 
+                        }
+                    }
+                    
                     printf(">> Record updated successfully!\n");
                 }
                 break;
