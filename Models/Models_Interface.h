@@ -41,9 +41,6 @@ extern struct Patient DefaultPatient[MAX_NUMBER_OF_PATIENTS];
 extern struct Patient* TAILPTR;
 extern u32 lastID; 
 
-/* The Appointment Times Choices*/
-extern const u8* slotTimes[10];
-
 void IntializePatients();
 void IntializedAppointmentsImplementation();
 
