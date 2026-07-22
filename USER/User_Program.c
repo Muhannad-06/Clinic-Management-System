@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "../APP/STD_TYPES.h"
-#include "../APP/Models.h"
+#include "../Models/Models_Interface.h"
 #include "User_Interface.h"
 
 void UserMode(){
@@ -29,9 +29,11 @@ void UserMode(){
             printf("          NEXT APPOINTMENT              \n");
             printf("----------------------------------------\n");
             printf(" Clinic : %s\n", currentPatient->nxtAPP.clinicName);
-            
-            printf(" Date   : %02d/%02d/2026\n", currentPatient->nxtAPP.day, currentPatient->nxtAPP.month);
             printf(" Time   : %02d:00 (24-hour format)\n", currentPatient->nxtAPP.Time);
+            printf("----------------------------------------\n");
+            printf("              APPOINTMENTs              \n");
+            printf("----------------------------------------\n");
+            printf("Date");
             printf("========================================\n\n");
             
             break;

@@ -1,20 +1,25 @@
 #include "../APP/STD_TYPES.h"
-#include "../APP/Models.h"
+#include "../Models/Models_Interface.h"
 #include "Admin_Interface.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-u16 dailySlots[5] = {0, 0, 0, 0, 0};
+u16 dailySlots[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 /* The text representations of our 5 slots */
-const char* slotTimes[5] = {
-    "2:00 PM to 2:30 PM",
-    "2:30 PM to 3:00 PM",
-    "3:00 PM to 3:30 PM",
-    "4:00 PM to 4:30 PM",
-    "4:30 PM to 5:00 PM"
+const u8* slotTimes[10] = {
+    "10:00 AM to 10:30 AM",
+    "10:30 AM to 11:00 AM",
+    "11:00 AM to 11:30 AM",
+    "11:30 AM to 12:00 PM",
+    "12:00 PM to 12:30 PM",
+    " 2:00 PM to  2:30 PM",
+    " 2:30 PM to  3:00 PM",
+    " 3:00 PM to  3:30 PM",
+    " 4:00 PM to  4:30 PM",
+    " 4:30 PM to  5:00 PM"
 };
 
 /* Helper function to check if an ID already exists */
@@ -43,7 +48,7 @@ void AdminMode() {
         printf("Enter Password: ");
         scanf("%14s", password);
         
-        if (strcmp((char*)password, "1234") == 0) {
+        if (strcmp((u8*)password, admin.SecurityPassCode) == 0) {
             authenticated = 1;
             break;
         }
@@ -69,7 +74,7 @@ void AdminMode() {
         printf(" 5 -> Exit Admin Mode\n");
         printf("----------------------------------------\n");
         printf("Choice: ");
-        scanf("%hhu", &choice);
+        scanf("%hu", &choice);
 
         switch (choice) {
             case 1: {

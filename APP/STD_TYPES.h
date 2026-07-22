@@ -18,7 +18,9 @@ typedef double f64;
 
 typedef long double f128;
 
+#ifndef NULL
 #define NULL ((void*)0)
+#endif
 
 typedef enum
 {

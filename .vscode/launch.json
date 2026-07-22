@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/Projects/Clinic-Management-System/Clinic-Management-System",
-      "program": "d:/Projects/Clinic-Management-System/Clinic-Management-System/build/Debug/outDebug",
+      "cwd": "d:/Projects/Clinic-Management-System/Clinic-Management-System/Models",
+      "program": "d:/Projects/Clinic-Management-System/Clinic-Management-System/Models/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

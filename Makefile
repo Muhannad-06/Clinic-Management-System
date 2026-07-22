@@ -20,7 +20,7 @@ SRC_DIRS := APP ADMIN USER
 BUILD_DIR := build
 BIN_DIR   := bin
 
-SRCS := APP/Clinic.c APP/Models.c ADMIN/Admin_Program.c USER/User_Program.c
+SRCS := APP/Clinic.c Models/Models.c ADMIN/Admin_Program.c USER/User_Program.c
 OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(SRCS))
 
 TARGET      := $(BIN_DIR)/clinic

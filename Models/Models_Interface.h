@@ -1,9 +1,9 @@
 #ifndef MODELS_H
 #define MODELS_H
 
-#include "STD_TYPES.h"
+#include "../APP/STD_TYPES.h"
 
-#define MAX_PATIENTS_NAME 50
+#define MAX_PATIENTS_NAME 100
 #define MAX_APPOINTMENTS 5
 #define MAX_CLINIC_NAME_LENGTH 30
 #define MAX_NUMBER_OF_PATIENTS 15
@@ -14,35 +14,32 @@
 struct Appointment
 {
     u8 clinicName[MAX_CLINIC_NAME_LENGTH];
-    u16 patientID;
-    u8 day;
-    u8 month;
-    u8 Time; /*24-hour format*/
+    u32 patientID; /* u32 to hold 2026001 without overflowing */
+    u8 Time;       /* 24-hour format */
 };
 
 struct Patient
 {
-    u16 ID;
+    u32 ID;        /* u32 to hold 2026001 without overflowing */
     u8 Name[MAX_PATIENTS_NAME];
     u16 Age;
-    u8 ClinicName[MAX_CLINIC_NAME_LENGTH];
     u8 MedicalRecord[MEDICAL_RECORD_LENGTH];
-    struct Appointment nxtAPP;
+    struct Appointment* nxtAPP; /* Pointer to accept NULL */
     struct Patient* NEXT;
 };
-
 
 /* Admin */
 struct Admin
 {
     u8 userName[USERNAME_LENGTH];
-    u8 password[PASSWORD_LENGTH];
+    u8 SecurityPassCode[PASSWORD_LENGTH];
 };
-/*  Will Be Used Out This File */
-extern struct Admin admin;
+
+/* Extern declarations */
+extern struct Admin admin; 
 extern struct Patient DefaultPatient[MAX_NUMBER_OF_PATIENTS];
 extern struct Patient* TAILPTR;
-extern u16 lastID;
+extern u32 lastID; 
 
 void IntializePatients(void);
 
